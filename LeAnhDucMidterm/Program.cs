@@ -10,14 +10,14 @@ namespace LeAnhDucMidterm
 {
     class Program
     {
-        static void Main(string[] args)
+        static public void Main(string[] args)
         {
             string Cnn = ConfigurationManager.ConnectionStrings["MidTermCon"].ConnectionString;
             string Cmd = "";
             if (args.Length > 0)
                 Cmd = args[0];
 
-            PostModel OnePost = new PostModel();
+            PostModel newPost = new PostModel();
 
             switch (Cmd.ToLower())
             {
@@ -28,20 +28,21 @@ namespace LeAnhDucMidterm
                         Console.WriteLine("usage: Add Title Summary Content");
                         return;
                     }
-                    OnePost.Title = args[1];
-                    OnePost.Summary = args[2];
-                    OnePost.Content = args[3];
+                    newPost.Title = args[1];
+                    newPost.Summary = args[2];
+                    newPost.Content = args[3];
 
                     //Write your code to add Title, Sumary, Content into database
 
-                    Console.WriteLine("Title : " + OnePost.Title);
-                    Console.WriteLine("Summary : " + OnePost.Summary);
-                    Console.WriteLine("Content : " + OnePost.Content);
+                    Console.WriteLine("Title : " + newPost.Title);
+                    Console.WriteLine("Summary : " + newPost.Summary);
+                    Console.WriteLine("Content : " + newPost.Content);
 
                     PostController insert = new PostController();
-                    insert.AddOnePost(OnePost);
+                    insert.AddOnePost(newPost);
 
                     break;
+
                 case "delete":
 
                     if (args.Length != 2)
@@ -51,40 +52,44 @@ namespace LeAnhDucMidterm
                     }
                     //Get string from the second paramenters
                     string StrId = args[1];
-                    //Convert the second parameter into in, stored in Id variable
-                    bool isValid = int.TryParse(StrId, out OnePost.Id);
+                    //Convert the second parameter into int, stored in Id variable
+                    bool isValid = int.TryParse(StrId, out newPost.Id);
                     if (!isValid)
                     {
                         Console.WriteLine("Invalid Id " + StrId);
                         return;
                     }
                     /*Code Delete here with the paramenter Id */
-                    if (OnePost.Id > 0)
+                    if (newPost.Id > 0)
                     {
                         /*write your code here */
+                        PostController delete = new PostController();
+                        delete.DeleteOnePost(newPost.Id);
+
                     }
 
 
                     Console.WriteLine("Delete completed " + StrId);
                     break;
+
                 case "list":
-                    if (args.Length != 2)
-                    {
-                        Console.WriteLine("usage: List Keyword");
-                        return;
-                    }
+
                     string Keyword = args[1];
-                    if (string.IsNullOrEmpty(Keyword))
+                    if (Keyword == "all")
                     {
                         //Code search with no keyword
+                        PostController search = new PostController();
+                        search.ListAllPost();
                     }
                     else
                     {
                         //Code search with keyword
+                        PostController search = new PostController();
+                        search.ListPost(Keyword);
                     }
 
 
-                    Console.WriteLine("Query Completed " + Keyword);
+                    //Console.WriteLine("Query Completed " + Keyword);
                     break;
                 case "Load":
 
